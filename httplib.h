@@ -11,6 +11,7 @@
 #ifdef _WIN32
 #ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
+#define MSG_NOSIGNAL 0 // do not exist on windows
 #endif
 #ifndef _CRT_NONSTDC_NO_DEPRECATE
 #define _CRT_NONSTDC_NO_DEPRECATE
@@ -1402,7 +1403,7 @@ inline int SocketStream::read(char* ptr, size_t size)
 
 inline int SocketStream::write(const char* ptr, size_t size)
 {
-    return send(sock_, ptr, size, 0);
+    return send(sock_, ptr, size, MSG_NOSIGNAL);
 }
 
 inline int SocketStream::write(const char* ptr)
@@ -1420,9 +1421,6 @@ inline Server::Server(HttpVersion http_version)
     , svr_sock_(-1)
     , running_threads_(0)
 {
-#ifndef _WIN32
-    signal(SIGPIPE, SIG_IGN);
-#endif
 }
 
 inline Server::~Server()
